@@ -1,0 +1,81 @@
+Project Title: PrepTrack – Prepare for your Exams and Track Progress
+Team No: B8
+Course: Software Engineering (CSE) Batch B
+
+Project Overview
+PrepTrack is a full-stack web application designed to help students and administrators manage exam preparation resources, track academic progress, and share notes, question papers, and results efficiently.
+The system includes two distinct portals:
+->Student Portal: for accessing resources, checking leaderboards, tracking progress, and viewing results.
+->Admin Portal: for uploading materials (notes, PPTs, results), managing students, and publishing announcements.
+
+Tech Stack & Architecture
+🔹 Frontend
+Framework: React + Vite
+Styling: Tailwind CSS + Lucide Icons + Recharts
+State Management: React Context API
+Routing: React Router DOM
+Frontend Folder: /Frontend
+🔹 Backend
+Runtime: Node.js with Express
+Database: MongoDB Atlas (Cloud)
+Storage: Firebase Storage (for uploaded PDFs, PPTs)
+Authentication: JWT-based login (bcrypt password hashing)
+Backend Folder: /Backend
+🔹 Architecture Style
+Three-Tier Architecture
+Presentation Layer → React Frontend
+Application Layer → Express REST API
+Data Layer → MongoDB Atlas + Firebase Storage
+Software Engineering Model Used: Iterative (Incremental) model
+
+
+PROJECT FOLDER STRUCTURE
+PrepTrack/
+├── Backend/
+│   ├── config/           # MongoDB & Firebase config
+│   ├── controllers/      # Logic for auth, upload, results
+│   ├── middleware/       # JWT & role authentication
+│   ├── models/           # Mongoose schemas
+│   ├── routes/           # REST API endpoints
+│   ├── .env              # Environment variables (hidden)
+│   └── server.js         # Entry point
+│
+├── Frontend/
+│   ├── src/
+│   │   ├── context/      # Auth & User state
+│   │   ├── pages/        # React pages for admin/student
+│   │   ├── components/   # Reusable UI parts
+│   │   ├── api.js        # Axios instance to call backend
+│   │   └── App.jsx       # Route definitions
+│   └── vite.config.js    # Proxy setup for backend
+│
+└── README.md / META_FILE.txt
+
+
+Prerequisites
+| Requirement   | Version / Tool         |
+| ------------- | ---------------------- |
+| Node.js       | v18+                   |
+| npm           | v9+                    |
+| MongoDB Atlas | Cloud Instance         |
+| Firebase      | Storage bucket enabled |
+| Git           | Latest                 |
+| Browser       | Chrome / Edge          |
+
+
+Dependencies Summary
+Frontend
+	• react, react-dom, react-router-dom
+	• axios
+	• tailwindcss
+	• framer-motion, lucide-react, recharts
+Backend
+	• express
+	• mongoose
+	• bcryptjs
+	• jsonwebtoken
+	• dotenv
+	• cors
+	• multer
+	• firebase-admin
+	• nodemon (dev dependency)

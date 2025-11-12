@@ -1,0 +1,7 @@
+# Firebase credentials
+Backend/config/serviceAccountKey.json
+Backend/node_modules/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

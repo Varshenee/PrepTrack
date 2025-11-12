@@ -1,0 +1,12 @@
+import Branch from "../models/Branch.js";
+
+export const addBranch = async (req, res) => {
+  const { branchName, branchCode } = req.body;
+  const branch = await Branch.create({ branchName, branchCode });
+  res.json(branch);
+};
+
+export const getBranches = async (req, res) => {
+  const branches = await Branch.find();
+  res.json(branches);
+};
