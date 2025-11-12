@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
 import API from "../api";
-import { ThumbsUp, Download } from "lucide-react";
+import { Upload, Download } from "lucide-react";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Resources() {
+  const { user } = useAuth();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Upload form states
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState("note");
+  const [file, setFile] = useState(null);
+  const [examDate, setExamDate] = useState("");
+
+  // Fetch materials (filtered by branch and releaseDate)
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
-        const { data } = await API.get("/upload");
+        const { data } = await API.get("/upload"); // ✅ getAvailableMaterials()
         setMaterials(data);
       } catch (err) {
         console.error("Error fetching resources:", err);
@@ -22,13 +31,97 @@ export default function Resources() {
     fetchMaterials();
   }, []);
 
+  // Handle file upload
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file) return alert("Please select a file.");
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("branch", user.branch);
+    formData.append("type", type);
+    formData.append("uploadedBy", user.name);
+    if (examDate) formData.append("examDate", examDate);
+    formData.append("file", file);
+
+    try {
+      const { data } = await API.post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setMaterials((prev) => [data.material, ...prev]);
+      setTitle("");
+      setType("note");
+      setExamDate("");
+      setFile(null);
+
+      alert("✅ File uploaded successfully!");
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("❌ Upload failed. Please try again.");
+    }
+  };
+
   if (loading) return <p className="text-slate-400">Loading resources...</p>;
   if (error) return <p className="text-red-400">{error}</p>;
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold mb-6">Computer Science Resources</h1>
+      <h1 className="text-3xl font-extrabold mb-6">
+        {user?.branch || "General"} Resources
+      </h1>
 
+      {/* Upload form */}
+      <form
+        onSubmit={handleUpload}
+        className="mb-6 p-5 rounded-xl bg-[#121b26] border border-white/10 space-y-3"
+      >
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <Upload size={18} /> Upload a New Material
+        </h2>
+
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Title (e.g., OS Notes)"
+          className="w-full p-2 bg-white/10 rounded-lg border border-white/10 outline-none focus:border-sky-500"
+          required
+        />
+
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="w-full p-2 bg-white/10 rounded-lg border border-white/10 focus:border-sky-500"
+        >
+          <option value="note">Notes</option>
+          <option value="ppt">PPT</option>
+          <option value="pyq">Previous Year Questions</option>
+        </select>
+
+        <label className="text-sm text-slate-300">Exam Date (optional)</label>
+        <input
+          type="date"
+          value={examDate}
+          onChange={(e) => setExamDate(e.target.value)}
+          className="w-full p-2 bg-white/10 rounded-lg border border-white/10 focus:border-sky-500"
+        />
+
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files[0])}
+          className="w-full text-sm text-slate-300"
+          required
+        />
+
+        <button
+          type="submit"
+          className="px-4 py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-semibold"
+        >
+          Upload
+        </button>
+      </form>
+
+      {/* Display Materials */}
       {materials.length === 0 ? (
         <p className="text-slate-400">No resources available yet.</p>
       ) : (
@@ -36,41 +129,27 @@ export default function Resources() {
           {materials.map((m, i) => (
             <div
               key={m._id || i}
-              className={`rounded-2xl p-5 border border-white/10 ${
-                i === 0 ? "ring-2 ring-yellow-400/70" : ""
-              } bg-[#121b26]`}
+              className="rounded-2xl p-5 border border-white/10 bg-[#121b26]"
             >
               <div className="text-xl font-semibold">{m.title}</div>
               <div className="text-sm opacity-70 mt-1">
-                Subject: {m.branch} • Type: {m.type?.toUpperCase()}
+                {m.branch} • {m.type?.toUpperCase()}
               </div>
               <p className="text-slate-300/80 mt-3">
-                Uploaded educational material available for your branch.
+                Uploaded by {m.uploadedBy || "Anonymous"}
               </p>
-
-              <div className="flex items-center justify-between mt-4 text-sm">
-                <div className="opacity-80">{m.uploadedBy || "Anonymous"}</div>
-                <div className="opacity-60">
-                  {new Date(m.releaseDate).toLocaleDateString()}
-                </div>
+              <div className="text-xs opacity-70 mt-2">
+                Released: {new Date(m.releaseDate).toLocaleDateString()}
               </div>
 
-              <div className="flex items-center gap-4 mt-4">
-                {/* Likes placeholder — to be hooked to a future like system */}
-                <div className="flex items-center gap-2 text-emerald-300">
-                  <ThumbsUp size={16} /> {Math.floor(Math.random() * 200)} {/* demo */}
-                </div>
-                {m.fileUrl && (
-                  <a
-                    href={m.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-auto px-3 py-1.5 rounded-lg bg-white/10 border border-white/10 flex items-center gap-2 hover:bg-white/20"
-                  >
-                    <Download size={16} /> View
-                  </a>
-                )}
-              </div>
+              <a
+                href={m.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 border border-white/10 hover:bg-white/20 text-sm"
+              >
+                <Download size={16} /> View
+              </a>
             </div>
           ))}
         </div>

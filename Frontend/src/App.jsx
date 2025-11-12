@@ -5,6 +5,7 @@ import { UserProvider } from "./context/UserContext.jsx";
 import { RequireStudent, RequireAdmin } from "./utils/guards.jsx";
 
 import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
 
 // Student pages
 import StudentLayout from "./layouts/StudentLayout.jsx";
@@ -33,6 +34,7 @@ export default function App() {
         <Routes>
           {/* Public route */}
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
           {/* STUDENT ROUTES (protected) */}
           <Route element={<RequireStudent />}>

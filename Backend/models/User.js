@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   rollNumber: String,
   branch: String,
   password: String,
-  role: { type: String, enum: ["student", "admin", "topper"], default: "student" },
+  role: { type: String, enum: ["student", "admin"], default: "student" },
 });
 
 export default mongoose.model("User", userSchema);
