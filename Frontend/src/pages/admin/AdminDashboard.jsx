@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import API from "../../api";
 import AdminLayout from "../../layouts/AdminLayout.jsx";
 
@@ -79,12 +80,15 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid md:grid-cols-4 gap-4 mt-6">
         {[
           { label: "Total Verified Uploads", value: stats.totalVerified },
           { label: "Active Student Uploaders", value: stats.activeUploaders },
-          { label: "Pending Approvals", value: stats.pending, accent: "text-yellow-400" },
+          {
+            label: "Pending Approvals",
+            value: stats.pending,
+            accent: "text-yellow-400",
+          },
           { label: "Blocked Users", value: stats.blocked, accent: "text-rose-400" },
         ].map((c, i) => (
           <div key={i} className="rounded-2xl p-5 bg-[#121b26] border border-white/10">
@@ -97,11 +101,8 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid lg:grid-cols-[1.3fr,1fr] gap-6 mt-6">
-        {/* Uploads by Branch */}
         <div className="rounded-2xl p-6 bg-[#121b26] border border-white/10">
-          <div className="text-lg font-semibold mb-4">
-            Uploads by Academic Branch
-          </div>
+          <div className="text-lg font-semibold mb-4">Uploads by Academic Branch</div>
           <div className="h-48 grid grid-cols-3 gap-4 items-end">
             {stats.branchData.slice(0, 3).map((b, i) => (
               <div
@@ -120,18 +121,16 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Approval Status */}
         <div className="rounded-2xl p-6 bg-[#121b26] border border-white/10">
           <div className="text-lg font-semibold mb-4">Content Approval Status</div>
           <Ring value={stats.approvalRate || 0} />
           <div className="mt-4 space-y-1 text-sm">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-emerald-400"></span>{" "}
-              Approved <span className="ml-auto opacity-70">{stats.approvalRate}%</span>
+              <span className="w-3 h-3 rounded-full bg-emerald-400"></span> Approved{" "}
+              <span className="ml-auto opacity-70">{stats.approvalRate}%</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-yellow-400"></span>{" "}
-              Pending{" "}
+              <span className="w-3 h-3 rounded-full bg-yellow-400"></span> Pending{" "}
               <span className="ml-auto opacity-70">
                 {Math.round(
                   (stats.pending /
@@ -142,8 +141,8 @@ export default function AdminDashboard() {
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-rose-400"></span>{" "}
-              Rejected <span className="ml-auto opacity-70">10%</span>
+              <span className="w-3 h-3 rounded-full bg-rose-400"></span> Rejected{" "}
+              <span className="ml-auto opacity-70">10%</span>
             </div>
           </div>
         </div>

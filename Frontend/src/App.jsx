@@ -72,39 +72,15 @@ export default function App() {
 
           {/* ADMIN ROUTES (protected) */}
           <Route element={<RequireAdmin />}>
-            <Route
-              path="/admin"
-              element={
-                <AdminLayout>
-                  <AdminDashboard />
-                </AdminLayout>
-              }
-            />
-            <Route
-              path="/admin/leaderboard"
-              element={<AdminLayout><AdminLeaderboard /></AdminLayout>}
-            />
-            <Route
-              path="/admin/announcements"
-              element={<AdminLayout><AdminAnnouncements /></AdminLayout>}
-            />
-            <Route
-              path="/admin/security"
-              element={<AdminLayout><AdminSecurityLogs /></AdminLayout>}
-            />
-            <Route
-              path="/admin/content"
-              element={<AdminLayout><AdminContent /></AdminLayout>}
-            />
-            <Route
-              path="/admin/branches"
-              element={<AdminLayout><AdminBranches /></AdminLayout>}
-            />
-            <Route
-              path="/admin/students"
-              element={<AdminLayout><AdminStudents /></AdminLayout>}
-            />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
+            <Route path="/admin/announcements" element={<AdminAnnouncements />} />
+            <Route path="/admin/security" element={<AdminSecurityLogs />} />
+            <Route path="/admin/content" element={<AdminContent />} />
+            <Route path="/admin/branches" element={<AdminBranches />} />
+            <Route path="/admin/students" element={<AdminStudents />} />
           </Route>
+
 
           {/* fallback */}
           <Route path="*" element={<Navigate to="/login" replace />} />
