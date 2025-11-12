@@ -1,19 +1,33 @@
 import Progress from "../models/Progress.js";
 
-// POST /api/progress/update → Students update their own progress
+// ✅ POST /api/progress/update → Students update their progress
 export const updateProgress = async (req, res) => {
   try {
     const { branch, progressPercent, confidence } = req.body;
 
-    // Always use the logged-in user's ID (from JWT)
+    // Determine confidence if not provided
+    const autoConfidence =
+      confidence ||
+      (progressPercent >= 80
+        ? "High"
+        : progressPercent >= 60
+        ? "Medium"
+        : "Low");
+
+    // Always use logged-in user's ID (from JWT)
     const progress = await Progress.findOneAndUpdate(
       { userId: req.user.id },
-      { branch, progressPercent, confidence, lastUpdated: Date.now() },
+      {
+        branch,
+        progressPercent,
+        confidence: autoConfidence,
+        lastUpdated: Date.now(),
+      },
       { upsert: true, new: true }
     );
 
     res.status(200).json({
-      message: "Progress updated successfully",
+      message: "✅ Progress updated successfully",
       progress,
     });
   } catch (err) {
@@ -22,13 +36,21 @@ export const updateProgress = async (req, res) => {
   }
 };
 
-// GET /api/progress → Students fetch their own progress
+// ✅ GET /api/progress → Students fetch their own progress
 export const getUserProgress = async (req, res) => {
   try {
-    const progress = await Progress.findOne({ userId: req.user.id });
+    let progress = await Progress.findOne({ userId: req.user.id });
+
+    // Auto-create a base record if not found
     if (!progress) {
-      return res.status(404).json({ message: "No progress data found" });
+      progress = await Progress.create({
+        userId: req.user.id,
+        branch: req.user.branch || "General",
+        progressPercent: 0,
+        confidence: "Medium",
+      });
     }
+
     res.status(200).json(progress);
   } catch (err) {
     console.error("Get User Progress Error:", err);
@@ -36,7 +58,7 @@ export const getUserProgress = async (req, res) => {
   }
 };
 
-// GET /api/progress/all → Admin only
+// ✅ GET /api/progress/all → Admin only
 export const getAllProgress = async (req, res) => {
   try {
     const all = await Progress.find();

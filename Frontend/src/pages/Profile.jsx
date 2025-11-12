@@ -12,7 +12,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await API.get("/auth/profile");
+        const { data } = await API.get("/auth/me");
         setProfile(data);
         setFormData({
           name: data.name || "",
