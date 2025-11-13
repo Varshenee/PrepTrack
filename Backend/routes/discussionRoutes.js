@@ -4,7 +4,10 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getDiscussions);
+// GET /api/discussions
+router.get("/", getDiscussions);
+
+// POST /api/discussions
 router.post("/", authMiddleware, createDiscussion);
 
 export default router;

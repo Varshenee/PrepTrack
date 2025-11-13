@@ -5,7 +5,7 @@ const discussionSchema = new mongoose.Schema({
   body: { type: String },
   author: { type: String, required: true },
   branch: { type: String },
-  tags: [String],
+  tags: { type: [String], default: [] },
   commentsCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });

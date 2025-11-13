@@ -7,9 +7,10 @@ export const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Store decoded info on req.user
+    // Store decoded user info for controllers
     req.user = {
       id: decoded.id,
+      name: decoded.name,     // ⭐ FIX: Add name
       role: decoded.role,
       branch: decoded.branch,
     };

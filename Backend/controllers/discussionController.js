@@ -1,9 +1,15 @@
 import Discussion from "../models/Discussion.js";
 
-// GET all discussions (filter by branch optional)
+// GET all discussions (works even without auth)
 export const getDiscussions = async (req, res) => {
   try {
-    const filter = req.user?.branch ? { branch: req.user.branch } : {};
+    let filter = {};
+
+    // Only filter by branch if req.user exists
+    if (req.user && req.user.branch) {
+      filter = { branch: req.user.branch };
+    }
+
     const discussions = await Discussion.find(filter).sort({ createdAt: -1 });
     res.status(200).json(discussions);
   } catch (err) {
@@ -16,13 +22,15 @@ export const getDiscussions = async (req, res) => {
 export const createDiscussion = async (req, res) => {
   try {
     const { title, tags, body } = req.body;
+
     const discussion = await Discussion.create({
       title,
-      body,
-      tags,
+      body: body || "", // frontend doesn't send body
+      tags: tags || [],
       author: req.user.name,
       branch: req.user.branch,
     });
+
     res.status(201).json(discussion);
   } catch (err) {
     console.error("Create Discussion Error:", err);

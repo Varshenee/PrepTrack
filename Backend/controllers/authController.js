@@ -53,9 +53,14 @@ export const login = async (req, res) => {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(400).json({ message: "Invalid password" });
 
-    // Create JWT
+    // ⭐ FIX: Added name inside JWT payload
     const token = jwt.sign(
-      { id: user._id, role: user.role, branch: user.branch },
+      {
+        id: user._id,
+        role: user.role,
+        branch: user.branch,
+        name: user.name,   // ⭐ IMPORTANT FIX
+      },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -86,7 +91,7 @@ export const getProfile = async (req, res) => {
   }
 };
 
-// In authController.js
+// UPDATE USER PROFILE
 export const updateProfile = async (req, res) => {
   try {
     const updated = await User.findByIdAndUpdate(
