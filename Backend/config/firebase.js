@@ -15,7 +15,7 @@ console.log("Looking for key at:", path.join(__dirname, "serviceAccountKey.json"
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "preptrack-bde72.firebasestorage.app" // Replace with your bucket name
+  storageBucket: "preptrack-bde72.firebasestorage.app" 
 });
 
 const bucket = admin.storage().bucket();

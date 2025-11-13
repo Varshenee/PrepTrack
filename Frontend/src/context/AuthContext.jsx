@@ -52,7 +52,6 @@ export function AuthProvider({ children }) {
         role,
       });
 
-      // Optional: auto-login after signup
       const u = {
         token: data.token || null,
         role: data.user?.role || role,
@@ -65,7 +64,7 @@ export function AuthProvider({ children }) {
         localStorage.setItem("token", data.token);
       }
 
-      // Redirect to login (or dashboard if auto-login is enabled)
+      // Redirect to login
       navigate("/login", { replace: true });
 
       return { ok: true };

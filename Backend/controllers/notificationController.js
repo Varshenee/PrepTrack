@@ -27,7 +27,7 @@ export const getNotifications = async (req, res) => {
       $or: [{ audience: "All Users" }, { audience: userBranch }],
     }).sort({ createdAt: -1 });
 
-    // ✅ Add a "read" property for frontend use
+    //"read" property for frontend use
     const formatted = notifications.map((n) => ({
       id: n._id,
       message: n.message,

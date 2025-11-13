@@ -2,7 +2,7 @@ import multer from "multer";
 import bucket from "../config/firebase.js";
 import { v4 as uuidv4 } from "uuid";
 import Material from "../models/Material.js";
-import fetch from "node-fetch"; // ✅ Import fetch for API call (works in Node 18+)
+import fetch from "node-fetch";
 
 // Configure multer to hold files in memory before sending to Firebase
 const storage = multer.memoryStorage();

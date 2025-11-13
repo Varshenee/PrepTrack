@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const leaderboardSchema = new mongoose.Schema({
   studentId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",  // ✅ this tells Mongoose to link to the User collection
+    ref: "User",  
     required: true,
   },
   score: { type: Number, default: 0 },

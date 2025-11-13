@@ -1,6 +1,6 @@
 import Progress from "../models/Progress.js";
 
-// ✅ POST /api/progress/update → Students update their progress
+// POST /api/progress/update → Students update their progress
 export const updateProgress = async (req, res) => {
   try {
     const { branch, progressPercent, confidence } = req.body;
@@ -36,7 +36,7 @@ export const updateProgress = async (req, res) => {
   }
 };
 
-// ✅ GET /api/progress → Students fetch their own progress
+// GET /api/progress → Students fetch their own progress
 export const getUserProgress = async (req, res) => {
   try {
     let progress = await Progress.findOne({ userId: req.user.id });
@@ -58,7 +58,7 @@ export const getUserProgress = async (req, res) => {
   }
 };
 
-// ✅ GET /api/progress/all → Admin only
+// GET /api/progress/all → Admin only
 export const getAllProgress = async (req, res) => {
   try {
     const all = await Progress.find();
