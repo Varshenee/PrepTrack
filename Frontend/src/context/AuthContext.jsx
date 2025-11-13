@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
     return raw ? JSON.parse(raw) : null;
   });
 
-  // ✅ LOGIN
+  // LOGIN
   const login = async (email, password) => {
     try {
       const { data } = await API.post("/auth/login", { email, password });
@@ -41,7 +41,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ✅ REGISTER (Signup)
+  // REGISTER (Signup)
   const register = async ({ name, email, branch, password, role }) => {
     try {
       const { data } = await API.post("/auth/register", {
@@ -76,7 +76,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ✅ LOGOUT
+  // LOGOUT
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem("auth_user");
