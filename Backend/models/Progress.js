@@ -10,6 +10,18 @@ const progressSchema = new mongoose.Schema({
     default: "Medium",
   },
   lastUpdated: { type: Date, default: Date.now },
+
+  prepSubjects: [
+    {
+      subject: { type: String, required: true },
+      examDate: { type: Date },
+      confidence: {
+        type: String,
+        enum: ["High", "Medium", "Low"],
+        default: "Medium"
+      }
+    }
+  ]
 });
 
 export default mongoose.models.Progress || mongoose.model("Progress", progressSchema);

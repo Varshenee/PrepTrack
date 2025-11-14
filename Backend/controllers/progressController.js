@@ -68,3 +68,69 @@ export const getAllProgress = async (req, res) => {
     res.status(500).json({ message: "Error fetching all progress" });
   }
 };
+
+// PREP controller
+
+// Add new sub
+export const addPrepSubject = async (req, res) => {
+  try {
+    const { subject, examDate, confidence } = req.body;
+
+    const progress = await Progress.findOne({ userId: req.user.id });
+
+    progress.prepSubjects.push({
+      subject,
+      examDate,
+      confidence
+    });
+
+    await progress.save();
+
+    res.status(201).json({ message: "Subject added", prepSubjects: progress.prepSubjects });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error adding prep subject" });
+  }
+};
+
+// Edit
+export const updatePrepSubject = async (req, res) => {
+  try {
+    const { confidence, examDate } = req.body;
+    const subjectId = req.params.id;
+
+    const progress = await Progress.findOne({ userId: req.user.id });
+
+    const sub = progress.prepSubjects.id(subjectId);
+
+    if (!sub) return res.status(404).json({ message: "Subject not found" });
+
+    if (confidence) sub.confidence = confidence;
+    if (examDate) sub.examDate = examDate;
+
+    await progress.save();
+
+    res.json({ message: "Updated", prepSubjects: progress.prepSubjects });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating subject" });
+  }
+};
+
+// Delete a subject
+export const deletePrepSubject = async (req, res) => {
+  try {
+    const subjectId = req.params.id;
+    const progress = await Progress.findOne({ userId: req.user.id });
+
+    progress.prepSubjects = progress.prepSubjects.filter(
+      (sub) => sub._id.toString() !== subjectId
+    );
+
+    await progress.save();
+
+    res.json({ message: "Deleted", prepSubjects: progress.prepSubjects });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting subject" });
+  }
+};
+

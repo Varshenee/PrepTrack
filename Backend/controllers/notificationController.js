@@ -52,7 +52,7 @@ export const markAsRead = async (req, res) => {
 
     const note = await Notification.findByIdAndUpdate(
       id,
-      { $addToSet: { readBy: userId } }, // ✅ prevent duplicates
+      { $addToSet: { readBy: userId } },
       { new: true }
     );
 

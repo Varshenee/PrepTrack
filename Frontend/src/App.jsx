@@ -16,7 +16,6 @@ import Leaderboard from "./pages/Leaderboard.jsx";
 import Profile from "./pages/Profile.jsx";
 import Progress from "./pages/Progress.jsx";
 import Resources from "./pages/Resources.jsx";
-import Results from "./pages/Results.jsx";
 
 // Admin pages
 import AdminLayout from "./layouts/AdminLayout.jsx";
@@ -77,10 +76,6 @@ export default function App() {
             <Route
               path="/resources"
               element={<StudentLayout><Resources /></StudentLayout>}
-            />
-            <Route
-              path="/results"
-              element={<StudentLayout><Results /></StudentLayout>}
             />
           </Route>
 

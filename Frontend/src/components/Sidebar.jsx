@@ -9,7 +9,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import { useAuth } from "../context/AuthContext.jsx"; // ✅ import auth context
+import { useAuth } from "../context/AuthContext.jsx";
 
 const shell = {
   panel: "bg-[#121b26]",
@@ -26,11 +26,11 @@ const links = [
 ];
 
 export default function Sidebar() {
-  const { logout } = useAuth(); // ✅ get logout from context
+  const { logout } = useAuth();
 
   return (
     <aside
-      className={`hidden md:flex md:flex-col w-64 shrink-0 ${shell.panel} ${shell.border}`}
+      className={`hidden md:flex md:flex-col w-64 shrink-0 ${shell.panel} ${shell.border} overflow-y-auto`}
     >
       {/* Top header */}
       <div className="flex items-center gap-3 px-6 h-16 border-b border-white/10">
@@ -59,17 +59,8 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Bottom settings + logout */}
-      <div className="mt-auto p-3">
-        <NavLink
-          to="/settings"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10"
-        >
-          <Settings size={18} />
-          <span>Settings</span>
-        </NavLink>
-
-        {/* ✅ Logout Button */}
+      {/* Sticky Logout Button */}
+      <div className="sticky bottom-0 bg-[#121b26] p-3 border-t border-white/10">
         <button
           onClick={logout}
           className="w-full mt-2 flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 text-left"

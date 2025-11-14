@@ -5,7 +5,7 @@ import User from "../models/User.js";
 export const getLeaderboard = async (req, res) => {
   try {
     const data = await Leaderboard.find()
-      .populate("studentId", "name branch email") // ✅ include user details
+      .populate("studentId", "name branch email") 
       .sort({ score: -1 });
 
     // Format response for the frontend
@@ -24,7 +24,7 @@ export const getLeaderboard = async (req, res) => {
   }
 };
 
-// POST /api/leaderboard/update — Called when points are added
+// POST /api/leaderboard/update 
 export const updateLeaderboard = async (req, res) => {
   try {
     const { studentId, points } = req.body;

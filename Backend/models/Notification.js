@@ -6,7 +6,7 @@ const notificationSchema = new mongoose.Schema({
   priority: { type: Boolean, default: false },
   createdBy: { type: String },
   createdAt: { type: Date, default: Date.now },
-  readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // ✅ NEW
+  readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], 
 });
 
 export default mongoose.model("Notification", notificationSchema);

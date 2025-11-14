@@ -9,7 +9,7 @@ const storage = multer.memoryStorage();
 export const upload = multer({ storage }).single("file");
 
 // ===============================
-// 📌 UPLOAD MATERIAL
+// UPLOAD MATERIAL
 // ===============================
 export const uploadMaterial = async (req, res) => {
   try {
@@ -87,7 +87,7 @@ export const uploadMaterial = async (req, res) => {
 };
 
 // ===============================
-// 📌 STUDENT: GET AVAILABLE MATERIALS
+// STUDENT: GET AVAILABLE MATERIALS
 // ===============================
 export const getAvailableMaterials = async (req, res) => {
   try {
@@ -108,7 +108,7 @@ export const getAvailableMaterials = async (req, res) => {
 };
 
 // ===============================
-// 📌 ADMIN: GET ALL MATERIALS
+// ADMIN: GET ALL MATERIALS
 // ===============================
 export const getAllMaterials = async (req, res) => {
   try {
@@ -121,7 +121,7 @@ export const getAllMaterials = async (req, res) => {
 };
 
 // ===============================
-// 📌 ADMIN: UPDATE MATERIAL STATUS
+// ADMIN: UPDATE MATERIAL STATUS
 // ===============================
 export const updateMaterialStatus = async (req, res) => {
   try {

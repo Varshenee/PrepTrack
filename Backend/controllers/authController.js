@@ -26,7 +26,7 @@ export const register = async (req, res) => {
       password: hashed,
     });
 
-    // ⭐ SECURITY LOG — Registration
+    //SECURITY LOG — Registration
     await addSecurityLog(
       user._id,
       "Admin Action",
@@ -61,19 +61,19 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      // ⭐ SECURITY LOG — Login failure: email not found
+      // SECURITY LOG — Login failure: email not found
       await addSecurityLog(null, "Login Failure", req.ip, `Email not found: ${email}`);
       return res.status(400).json({ message: "User not found" });
     }
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
-      // ⭐ SECURITY LOG — Wrong password
+      // SECURITY LOG — Wrong password
       await addSecurityLog(user._id, "Login Failure", req.ip, "Wrong password");
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    // ⭐ SECURITY LOG — Successful login
+    // SECURITY LOG — Successful login
     await addSecurityLog(user._id, "Login Success", req.ip, "User logged in");
 
     const token = jwt.sign(
@@ -126,7 +126,7 @@ export const updateProfile = async (req, res) => {
       { new: true, runValidators: true }
     ).select("-password");
 
-    // ⭐ SECURITY LOG — Profile update
+    // SECURITY LOG — Profile update
     await addSecurityLog(req.user.id, "Admin Action", req.ip, "Profile updated");
 
     res.json(updated);

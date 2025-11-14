@@ -89,10 +89,21 @@ export default function AdminLeaderboard() {
                   >
                     <td className="px-6 py-3">{i + 1}</td>
                     <td className="px-6 py-3 flex items-center gap-3">
-                      <div
-                        className="w-8 h-8 rounded-full bg-[url('https://i.pravatar.cc/100?img=8')] bg-cover"
-                        alt=""
-                      />
+                      <div className="w-9 h-9 grid place-items-center rounded-full bg-white/10 border border-white/10">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          className="w-5 h-5 text-sky-300"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12 2a5 5 0 100 10 5 5 0 000-10zm-7 18a7 7 0 1114 0H5z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+
                       <div>
                         <div>{r.studentId?.name || "Unknown"}</div>
                         <div className="text-xs opacity-70">

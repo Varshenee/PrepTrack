@@ -53,7 +53,21 @@ export default function AdminStudents() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[url('https://i.pravatar.cc/100')] bg-cover" />
+                  <div className="w-9 h-9 grid place-items-center rounded-full bg-white/10 border border-white/10">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      className="w-5 h-5 text-sky-300"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2a5 5 0 100 10 5 5 0 000-10zm-7 18a7 7 0 1114 0H5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+
                   <div className="font-semibold">{s.name}</div>
                   <div className="ml-auto opacity-70">{p.progressPercent}%</div>
                 </div>

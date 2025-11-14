@@ -10,7 +10,7 @@ export const authMiddleware = (req, res, next) => {
     // Store decoded user info for controllers
     req.user = {
       id: decoded.id,
-      name: decoded.name,     // ⭐ FIX: Add name
+      name: decoded.name,     
       role: decoded.role,
       branch: decoded.branch,
     };
