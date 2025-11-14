@@ -2,10 +2,7 @@ import mongoose from "mongoose";
 
 const SecurityLogSchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     eventType: {
       type: String,
       enum: [
@@ -17,8 +14,8 @@ const SecurityLogSchema = new mongoose.Schema(
       ],
       required: true,
     },
-    ipAddress: { type: String },
-    details: { type: String },
+    ipAddress: String,
+    details: String,
   },
   { timestamps: true }
 );

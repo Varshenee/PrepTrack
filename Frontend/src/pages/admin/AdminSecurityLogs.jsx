@@ -10,17 +10,22 @@ export default function AdminSecurityLogs() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log("🔵 AdminSecurityLogs Mounted!");
+
     const fetchLogs = async () => {
+      console.log("📡 Calling /security-logs API...");
       try {
         const { data } = await API.get("/security-logs");
+        console.log("✅ Logs received:", data);
         setLogs(data);
       } catch (err) {
-        console.error("Error fetching security logs:", err);
+        console.error("❌ Error fetching security logs:", err);
         setError("Failed to load logs");
       } finally {
         setLoading(false);
       }
     };
+
     fetchLogs();
   }, []);
 
@@ -30,6 +35,7 @@ export default function AdminSecurityLogs() {
       log.userId?.name?.toLowerCase().includes(search.toLowerCase());
     const matchFilter =
       filter === "All Events" ? true : log.eventType === filter;
+
     return matchSearch && matchFilter;
   });
 
@@ -90,36 +96,18 @@ export default function AdminSecurityLogs() {
                       {new Date(r.createdAt).toLocaleString()}
                     </td>
                     <td className="px-6 py-3">
-                      <span
-                        className={`px-2 py-1 rounded-lg text-sm ${
-                          r.eventType === "Password Reset"
-                            ? "bg-yellow-500/15 text-yellow-300"
-                            : r.eventType === "Login Failure"
-                            ? "bg-rose-500/15 text-rose-300"
-                            : "bg-emerald-500/15 text-emerald-300"
-                        }`}
-                      >
-                        {r.eventType}
-                      </span>
+                      {r.eventType}
                     </td>
                     <td className="px-6 py-3">
-                      {r.userId?.name || "Unknown"} (
-                      {r.userId?.email || "No email"})
+                      {r.userId?.name || "Unknown"} ({r.userId?.email})
                     </td>
-                    <td className="px-6 py-3">{r.ipAddress || "N/A"}</td>
-                    <td className="px-6 py-3">{r.details || "-"}</td>
+                    <td className="px-6 py-3">{r.ipAddress}</td>
+                    <td className="px-6 py-3">{r.details}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="mt-4 flex justify-between">
-          <div className="opacity-70 text-sm">
-            Showing {filteredLogs.length} of {logs.length} results
-          </div>
         </div>
       </div>
     </AdminLayout>

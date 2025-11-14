@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import API from "../api";
 import { useUser } from "../context/UserContext.jsx";
 import Tag from "../components/Tag.jsx";
+import { useNavigate } from "react-router-dom";
 import {
   MessageSquarePlus,
-  Tag as TagIcon,
   Hash,
   BookOpen,
   Sparkles,
@@ -13,20 +13,21 @@ import {
 
 export default function Discussions() {
   const { user } = useUser();
+  const navigate = useNavigate();
+
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newTitle, setNewTitle] = useState("");
   const [newTags, setNewTags] = useState("");
   const [success, setSuccess] = useState(false);
 
-  // Fetch all discussions
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const { data } = await API.get("/discussions");
         setPosts(data);
-      } catch (err) {
-        console.error("Error fetching discussions:", err);
+      } catch {
+        console.error("Error fetching discussions");
       } finally {
         setLoading(false);
       }
@@ -34,9 +35,9 @@ export default function Discussions() {
     fetchPosts();
   }, []);
 
-  // Create new discussion
   const handleCreateDiscussion = async () => {
     if (!newTitle.trim()) return;
+
     try {
       const { data } = await API.post("/discussions", {
         title: newTitle,
@@ -46,7 +47,7 @@ export default function Discussions() {
       setNewTitle("");
       setNewTags("");
       setSuccess(true);
-      setTimeout(() => setSuccess(false), 2500);
+      setTimeout(() => setSuccess(false), 2000);
     } catch (err) {
       console.error("Error creating discussion:", err);
     }
@@ -64,12 +65,7 @@ export default function Discussions() {
         </div>
 
         <div className="space-y-2">
-          {[
-            "Data Structures",
-            "Algorithms",
-            "Operating Systems",
-            "Computer Networks",
-          ].map((s) => (
+          {["Data Structures", "Algorithms", "Operating Systems", "Computer Networks"].map((s) => (
             <button
               key={s}
               className="w-full text-left px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
@@ -122,43 +118,36 @@ export default function Discussions() {
 
         {/* Posts */}
         <div className="space-y-4">
-          {posts.length === 0 ? (
-            <p className="opacity-70 text-slate-300">
-              No discussions yet. Start one!
-            </p>
-          ) : (
-            posts.map((p, i) => (
-              <div
-                key={i}
-                className="rounded-2xl p-5 border border-white/10 bg-[#0f1822] hover:border-sky-500/40 transition-all"
-              >
-                <div className="font-semibold text-lg flex items-center gap-2">
-                  <Sparkles size={18} className="text-yellow-300" />
-                  {p.title}
-                </div>
-
-                <div className="text-sm opacity-70 mb-2">
-                  Posted by {p.author} •{" "}
-                  {new Date(p.createdAt).toLocaleDateString()}
-                </div>
-
-                <div className="flex items-center gap-2 flex-wrap">
-                  {p.tags.map((t, idx) => (
-                    <Tag key={idx}>{t}</Tag>
-                  ))}
-                </div>
-
-                <div className="text-sm opacity-70 mt-2">
-                  💬 {p.commentsCount} comments
-                </div>
+          {posts.map((p) => (
+            <div
+              key={p._id}
+              onClick={() => navigate(`/discussions/${p._id}`)}
+              className="rounded-2xl p-5 border border-white/10 bg-[#0f1822] hover:border-sky-500/40 transition-all cursor-pointer"
+            >
+              <div className="font-semibold text-lg flex items-center gap-2">
+                <Sparkles size={18} className="text-yellow-300" />
+                {p.title}
               </div>
-            ))
-          )}
+
+              <div className="text-sm opacity-70 mb-2">
+                Posted by {p.author} • {new Date(p.createdAt).toLocaleDateString()}
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                {p.tags.map((t, idx) => (
+                  <Tag key={idx}>{t}</Tag>
+                ))}
+              </div>
+
+              <div className="text-sm opacity-70 mt-2">
+                💬 {p.commentsCount} comments
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Toast Notification */}
         {success && (
-          <div className="fixed right-8 bottom-8 rounded-xl bg-emerald-500/20 border border-emerald-400/40 px-4 py-3 text-sm text-emerald-300 shadow-lg backdrop-blur-sm transition-all duration-500">
+          <div className="fixed right-8 bottom-8 rounded-xl bg-emerald-500/20 border border-emerald-400/40 px-4 py-3 text-sm text-emerald-300 shadow-lg backdrop-blur-sm">
             ✅ Discussion posted successfully
           </div>
         )}

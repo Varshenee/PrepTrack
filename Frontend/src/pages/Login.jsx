@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export default function Login() {
   const { login } = useAuth();
-  const [tab, setTab] = useState("student"); // cosmetic toggle
+  const [tab, setTab] = useState("student");
   const [emailOrRoll, setEmailOrRoll] = useState("");
   const [pwd, setPwd] = useState("");
   const [show, setShow] = useState(false);
@@ -17,10 +17,19 @@ export default function Login() {
     setErr("");
     setLoading(true);
 
-    // call backend login
     const res = await login(emailOrRoll, pwd);
 
-    if (!res.ok) setErr(res.error || "Login failed");
+    if (!res.ok) {
+      setErr(res.error || "Login failed");
+      setLoading(false);
+      return;
+    }
+
+    // ⭐ FIX: Trigger user update instantly (NO refresh needed)
+    window.dispatchEvent(
+      new CustomEvent("user-logged-in", { detail: res.user })
+    );
+
     setLoading(false);
   };
 
@@ -33,7 +42,7 @@ export default function Login() {
             <div className="opacity-70">Sign in to your account</div>
           </div>
 
-          {/* Tabs (cosmetic) */}
+          {/* Tabs */}
           <div className="grid grid-cols-2 p-1 rounded-xl bg-white/10 border border-white/10 mb-4">
             <button
               onClick={() => setTab("student")}
@@ -93,11 +102,6 @@ export default function Login() {
                   {show ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              {tab !== "admin" && (
-                <div className="text-xs opacity-70 mt-1">
-                  Use your registered password.
-                </div>
-              )}
             </div>
 
             {err && <div className="text-rose-300 text-sm">{err}</div>}
@@ -111,7 +115,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Signup Link */}
           <div className="text-center text-sm mt-4 text-gray-400">
             Don’t have an account?{" "}
             <Link to="/signup" className="text-sky-400 hover:underline">

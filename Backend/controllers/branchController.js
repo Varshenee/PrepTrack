@@ -10,3 +10,9 @@ export const getBranches = async (req, res) => {
   const branches = await Branch.find();
   res.json(branches);
 };
+
+export const deleteBranch = async (req, res) => {
+  const { id } = req.params;
+  await Branch.findByIdAndDelete(id);
+  res.json({ message: "Branch deleted" });
+};

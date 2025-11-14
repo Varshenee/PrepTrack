@@ -15,12 +15,14 @@ export default function Resources() {
   const [file, setFile] = useState(null);
   const [examDate, setExamDate] = useState("");
 
-  // Fetch materials (filtered by branch and releaseDate)
+  // Fetch materials (filtered by branch + release date)
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
-        const { data } = await API.get("/upload"); // ✅ getAvailableMaterials()
-        setMaterials(data);
+        const { data } = await API.get("/upload"); // backend already filters by branch
+        setMaterials(
+          data.filter((m) => m.status !== "rejected") // ❌ hide rejected
+        );
       } catch (err) {
         console.error("Error fetching resources:", err);
         setError("Failed to load resources");
@@ -49,7 +51,11 @@ export default function Resources() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setMaterials((prev) => [data.material, ...prev]);
+      // Add only if not rejected
+      if (data.material.status !== "rejected") {
+        setMaterials((prev) => [data.material, ...prev]);
+      }
+
       setTitle("");
       setType("note");
       setExamDate("");
@@ -126,18 +132,40 @@ export default function Resources() {
         <p className="text-slate-400">No resources available yet.</p>
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
-          {materials.map((m, i) => (
+          {materials.map((m) => (
             <div
-              key={m._id || i}
+              key={m._id}
               className="rounded-2xl p-5 border border-white/10 bg-[#121b26]"
             >
               <div className="text-xl font-semibold">{m.title}</div>
+
               <div className="text-sm opacity-70 mt-1">
                 {m.branch} • {m.type?.toUpperCase()}
               </div>
+
+              {/* Status pill */}
+              <div className="mt-2">
+                {m.status === "pending" && (
+                  <span className="text-xs px-2 py-1 rounded bg-yellow-600/40 border border-yellow-500/30">
+                    Pending Review
+                  </span>
+                )}
+                {m.status === "approved" && (
+                  <span className="text-xs px-2 py-1 rounded bg-emerald-600/40 border border-emerald-500/30">
+                    Approved
+                  </span>
+                )}
+                {m.status === "revision" && (
+                  <span className="text-xs px-2 py-1 rounded bg-blue-600/40 border border-blue-500/30">
+                    Needs Revision
+                  </span>
+                )}
+              </div>
+
               <p className="text-slate-300/80 mt-3">
                 Uploaded by {m.uploadedBy || "Anonymous"}
               </p>
+
               <div className="text-xs opacity-70 mt-2">
                 Released: {new Date(m.releaseDate).toLocaleDateString()}
               </div>

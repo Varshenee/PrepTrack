@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API from "../api";
-import { useUser } from "../context/UserContext.jsx";
 
 export default function Profile() {
-  const { user } = useUser(); // context already stores login data
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({});

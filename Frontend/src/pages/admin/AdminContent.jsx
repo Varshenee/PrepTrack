@@ -87,7 +87,7 @@ export default function AdminContent() {
             <p className="text-slate-400 p-4">Loading materials...</p>
           ) : (
             <div className="divide-y divide-white/10 bg-[#0f1822]">
-              {filtered.map((r, i) => (
+              {filtered.map((r) => (
                 <div
                   key={r._id}
                   onClick={() => setSelected(r)}

@@ -9,6 +9,7 @@ export default function AdminBranches() {
   const [search, setSearch] = useState("");
   const [newBranch, setNewBranch] = useState({ branchName: "", branchCode: "" });
   const [success, setSuccess] = useState(false);
+  const [deleted, setDeleted] = useState(false);
 
   // Fetch branches
   useEffect(() => {
@@ -39,6 +40,19 @@ export default function AdminBranches() {
     }
   };
 
+  // DELETE Branch (Fixed endpoint)
+  const handleDelete = async (id) => {
+    try {
+      await API.delete(`/branch/${id}`); // ✔ FIXED
+      setBranches(branches.filter((b) => b._id !== id));
+
+      setDeleted(true);
+      setTimeout(() => setDeleted(false), 2500);
+    } catch (err) {
+      console.error("Error deleting branch:", err);
+    }
+  };
+
   const filteredBranches = branches.filter((b) =>
     b.branchName.toLowerCase().includes(search.toLowerCase())
   );
@@ -57,13 +71,17 @@ export default function AdminBranches() {
         <input
           placeholder="Branch Name"
           value={newBranch.branchName}
-          onChange={(e) => setNewBranch({ ...newBranch, branchName: e.target.value })}
+          onChange={(e) =>
+            setNewBranch({ ...newBranch, branchName: e.target.value })
+          }
           className="flex-1 bg-white/10 border border-white/10 rounded-xl px-3 py-2"
         />
         <input
           placeholder="Branch Code"
           value={newBranch.branchCode}
-          onChange={(e) => setNewBranch({ ...newBranch, branchCode: e.target.value })}
+          onChange={(e) =>
+            setNewBranch({ ...newBranch, branchCode: e.target.value })
+          }
           className="flex-1 bg-white/10 border border-white/10 rounded-xl px-3 py-2"
         />
         <button
@@ -86,6 +104,7 @@ export default function AdminBranches() {
                 <th className="px-6 py-3">BRANCH CODE</th>
                 <th className="px-6 py-3">BRANCH NAME</th>
                 <th className="px-6 py-3">DATE CREATED</th>
+                <th className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -96,6 +115,15 @@ export default function AdminBranches() {
                   <td className="px-6 py-3">
                     {new Date(b.createdAt || b.created).toLocaleDateString()}
                   </td>
+
+                  <td className="px-6 py-3">
+                    <button
+                      onClick={() => handleDelete(b._id)}
+                      className="text-red-400 hover:text-red-300"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -103,10 +131,17 @@ export default function AdminBranches() {
         </div>
       )}
 
-      {/* ✅ Toast */}
+      {/* Add Toast */}
       {success && (
         <div className="fixed right-8 bottom-8 rounded-xl bg-emerald-500/20 border border-emerald-400/40 px-4 py-3 text-sm text-emerald-300 shadow-lg backdrop-blur-sm transition-all duration-500">
           ✅ Branch added successfully
+        </div>
+      )}
+
+      {/* Delete Toast */}
+      {deleted && (
+        <div className="fixed right-8 bottom-8 rounded-xl bg-red-500/20 border border-red-400/40 px-4 py-3 text-sm text-red-300 shadow-lg backdrop-blur-sm transition-all duration-500">
+          ❌ Branch removed
         </div>
       )}
     </AdminLayout>

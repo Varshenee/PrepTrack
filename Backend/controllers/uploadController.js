@@ -4,25 +4,24 @@ import { v4 as uuidv4 } from "uuid";
 import Material from "../models/Material.js";
 import fetch from "node-fetch";
 
-// Configure multer to hold files in memory before sending to Firebase
+// Multer storage in memory
 const storage = multer.memoryStorage();
 export const upload = multer({ storage }).single("file");
 
-// Controller to upload materials to Firebase
+// ===============================
+// 📌 UPLOAD MATERIAL
+// ===============================
 export const uploadMaterial = async (req, res) => {
   try {
     const { title, branch, type, uploadedBy, examDate } = req.body;
 
-    // File validation
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Create a unique filename
     const filename = `${Date.now()}-${req.file.originalname}`;
     const file = bucket.file(filename);
 
-    // Upload file buffer to Firebase Storage
     await file.save(req.file.buffer, {
       metadata: {
         contentType: req.file.mimetype,
@@ -31,10 +30,9 @@ export const uploadMaterial = async (req, res) => {
       public: true,
     });
 
-    // Generate a public URL for the file
     const fileUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
 
-    // Calculate releaseDate (auto release logic)
+    // auto release logic
     let releaseDate = new Date();
     if (examDate) {
       const exam = new Date(examDate);
@@ -45,23 +43,23 @@ export const uploadMaterial = async (req, res) => {
       }
     }
 
-    // Save metadata in MongoDB
+    // save metadata
     const material = await Material.create({
       title,
       branch,
       type,
       uploadedBy,
       releaseDate,
-      fileUrl, // store Firebase URL
+      fileUrl,
+      status: "pending", // ALWAYS pending first
     });
 
-    // 🎯 Leaderboard points logic
-    let points = 10; // Default points
+    // leaderboard logic
+    let points = 10;
     if (type === "pyq") points = 15;
     else if (type === "ppt") points = 8;
 
     try {
-      // POST request to update leaderboard
       await fetch(`${process.env.BACKEND_URL || "http://localhost:5000"}/api/leaderboard/update`, {
         method: "POST",
         headers: {
@@ -69,33 +67,36 @@ export const uploadMaterial = async (req, res) => {
           Authorization: req.header("Authorization"),
         },
         body: JSON.stringify({
-          studentId: req.user.id, // from decoded token
+          studentId: req.user.id,
           points,
         }),
       });
-    } catch (lbError) {
-      console.error("⚠️ Leaderboard update failed:", lbError.message);
-      // Not a fatal error — don’t break upload flow
+    } catch (err) {
+      console.error("⚠️ Leaderboard update failed:", err.message);
     }
 
     res.status(201).json({
-      message: "✅ File uploaded successfully and leaderboard updated!",
+      message: "Uploaded successfully!",
       material,
     });
+
   } catch (err) {
     console.error("Upload Error:", err);
-    res.status(500).json({
-      message: "Error uploading material",
-      error: err.message,
-    });
+    res.status(500).json({ message: "Error uploading material", error: err.message });
   }
 };
 
-// Controller to get available materials (filtered by branch and release date)
+// ===============================
+// 📌 STUDENT: GET AVAILABLE MATERIALS
+// ===============================
 export const getAvailableMaterials = async (req, res) => {
   try {
     const materials = await Material.find({
       branch: req.user.branch,
+
+      // Students can see ONLY: pending, approved, revision
+      status: { $in: ["approved", "pending", "revision"] },
+
       releaseDate: { $lte: Date.now() },
     }).sort({ releaseDate: -1 });
 
@@ -106,7 +107,9 @@ export const getAvailableMaterials = async (req, res) => {
   }
 };
 
-// Admin: Get all uploaded materials (no restrictions)
+// ===============================
+// 📌 ADMIN: GET ALL MATERIALS
+// ===============================
 export const getAllMaterials = async (req, res) => {
   try {
     const materials = await Material.find().sort({ createdAt: -1 });
@@ -117,7 +120,9 @@ export const getAllMaterials = async (req, res) => {
   }
 };
 
-// Admin: Update material review status
+// ===============================
+// 📌 ADMIN: UPDATE MATERIAL STATUS
+// ===============================
 export const updateMaterialStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -129,11 +134,12 @@ export const updateMaterialStatus = async (req, res) => {
       { new: true }
     );
 
-    if (!updated) return res.status(404).json({ message: "Material not found" });
+    if (!updated)
+      return res.status(404).json({ message: "Material not found" });
+
     res.status(200).json(updated);
   } catch (err) {
     console.error("Update Material Status Error:", err);
     res.status(500).json({ message: "Error updating material status" });
   }
 };
-

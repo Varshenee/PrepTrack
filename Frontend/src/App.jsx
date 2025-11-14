@@ -11,6 +11,7 @@ import Signup from "./pages/Signup.jsx";
 import StudentLayout from "./layouts/StudentLayout.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Discussions from "./pages/Discussions.jsx";
+import DiscussionDetail from "./pages/DiscussionDetail.jsx";   // ⭐ NEW IMPORT
 import Leaderboard from "./pages/Leaderboard.jsx";
 import Profile from "./pages/Profile.jsx";
 import Progress from "./pages/Progress.jsx";
@@ -32,12 +33,14 @@ export default function App() {
     <AuthProvider>
       <UserProvider>
         <Routes>
+
           {/* Public route */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
           {/* STUDENT ROUTES (protected) */}
           <Route element={<RequireStudent />}>
+
             <Route
               path="/"
               element={
@@ -46,10 +49,19 @@ export default function App() {
                 </StudentLayout>
               }
             />
+
+            {/* Discussions list */}
             <Route
               path="/discussions"
               element={<StudentLayout><Discussions /></StudentLayout>}
             />
+
+            {/* ⭐ NEW — Discussion Detail Route */}
+            <Route
+              path="/discussions/:id"
+              element={<StudentLayout><DiscussionDetail /></StudentLayout>}
+            />
+
             <Route
               path="/leaderboard"
               element={<StudentLayout><Leaderboard /></StudentLayout>}
@@ -83,9 +95,9 @@ export default function App() {
             <Route path="/admin/students" element={<AdminStudents />} />
           </Route>
 
-
           {/* fallback */}
           <Route path="*" element={<Navigate to="/login" replace />} />
+
         </Routes>
       </UserProvider>
     </AuthProvider>
